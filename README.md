@@ -1,4 +1,41 @@
 # LABS_MOBILS
+## Лабораторная работа № 1
+В данной лабораторной работе мы установили docker и подготовили его к работе.
+
+Скрипт для установки на моей системе, а это **Debian GNU/Linux 11 (bullseye)** будет выглядеть следущим образом:
+```bash
+#!/bin/bash
+sudo apt update -y
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt update
+sudo apt install docker-ce -y
+sudo systemctl start docker
+sudo systemctl enable docker
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.28.6/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+sudo usermod -aG docker $USER
+sudo gpasswd -a $USER docker
+reboot
+```
+Для запуска рандомного контейнера на самом простом образе alpine без тегов(будет взят последний), воспользуемся командой `docker container run alpine`
+
+Т.к. у нас не было данного образа, то в консоли мы можем увидеть его установку:
+```bash
+Unable to find image 'alpine:latest' locally
+latest: Pulling from library/alpine
+f56be85fc22e: Pull complete 
+Digest: sha256:124c7d2707904eea7431fffe91522a01e5a861a624ee31d03372cc1d138a3126
+Status: Downloaded newer image for alpine:latest
+```
+Посмотрев на него с помощью команды `docker ps -a` можем увидеть, что он создался, но не запущен:
+```bash
+CONTAINER ID   IMAGE     COMMAND     CREATED         STATUS                     PORTS     NAMES
+f13db965bcea   alpine    "/bin/sh"   9 minutes ago   Exited (0) 9 minutes ago             beautiful_liskov
+```
+
 ## Лабораторная работа № 2
 В данной лабораторной работе мы должны познакомиться с основными командами Docker.
 Для выполнения этой работы я буду использовать сайт https://labs.play-with-docker.com/
