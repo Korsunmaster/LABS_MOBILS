@@ -227,3 +227,87 @@ f1417ff83b31: Mounted from fholzer/nginx-brotli
 latest: digest: sha256:616f31489c1596537b7f510ac22c91607c13e213d1414a0d76e1dcac6f4f9699 size: 2404
 ```
 Увидим, что наш образ загрузился в наш docker hub и все прошло успешно!
+
+## Лабораторная работа №3
+Проходясь по практической части мы создали новые сети с разными типами и подключали к ним контейнеры. Добавляли копию образа в локальный репозиторий, а также ставили лимиты на использование ресурсов. Теперь остановим и удалим все контейнеры, кроме **portainer**.
+```bash
+WARNING! This will remove all stopped containers.
+Are you sure you want to continue? [y/N] y
+Deleted Containers:
+a671c3e19bcff4f1c978e878a2e86503e36e6caf59025e76426d7fc5a85e35c1
+c03b09ab034d241ac1d57c8ee798e0910f5e9b85440ec04dd12795c67034ba4d
+dda89d4535c110dfd68e1741a06dd7fe11cc25d884852020cc5c8b5b09022a3f
+477311c540ecb760b709e731ef98756b5df5505b68f4ee57864511f2e2fa4cfb
+```
+Удалим все неиспользуемые образы:
+```bash
+WARNING! This will remove all images without at least one container associated to them.
+Are you sure you want to continue? [y/N] y
+Deleted Images:
+untagged: localhost:5000/nginx:v1
+untagged: localhost:5000/nginx@sha256:3f01b0094e21f7d55b9eb7179d01c49fdf9c3e1e3419d315b81a9e0bae1b6a90
+deleted: sha256:448a08f1d2f94e8db6db9286fd77a3a4f3712786583720a12f1648abb8cace25
+deleted: sha256:6b33c8bf5207fd88b6e0f942c230c59477990205dbed0ae41d54b5b29ed1051d
+deleted: sha256:a673eda43a02c5a8218e8be171c43912dc9646d588a881a463be970b7f06abf0
+deleted: sha256:e22652bd991fd7a83155d12651d319458cb233d428ca769323ecb0b1d6549844
+deleted: sha256:77350fbf9b519374ed1eee1c2387b1c9af0c7f048d11794fe172006323834954
+deleted: sha256:556cbc099a5c304d0f2fed44d6d153b7d74be08fce2b4ffe74b1183b75c5cae6
+deleted: sha256:8553b91047dad45bedc292812586f1621e0a464a09a7a7c2ce6ac5f8ba2535d7
+untagged: registry:2
+untagged: registry@sha256:8c51be2f669c82da8015017ff1eae5e5155fcf707ba914c5c7b798fbeb03b50c
+deleted: sha256:8db46f9d755043e6c427912d5c36b4375d68d31ab46ef9782fef06bdee1ed2cd
+deleted: sha256:77772f9a7bb9df7f2d25e374dcbda41b9025b4ce5a26f17d10043d39d9bcafac
+deleted: sha256:e5d7cfb455bd379332a3da31db783040de85cae7e981f05ae1388e11ca8b0e46
+deleted: sha256:b7109a1a0d45f2335e66af07f5161c4181565bf6b4bb7541e456ba15e1f62019
+deleted: sha256:5e85a660413809aa0f42ad3ed494f7a3b40fdf5349d3a6c30cbd41b6dacdd10c
+deleted: sha256:5bc340f6d4f5a3bc999dfbc790a0bdf0920b9103ef794645034de4260ee4e9c8
+untagged: hyper/docker-registry-web:latest
+untagged: hyper/docker-registry-web@sha256:723ffa29aed2c51417d8bd32ac93a1cd0e7ef857a0099c1e1d7593c09f7910ae
+deleted: sha256:0db5683824d8669ef8494f6e2c3aebf29facbda82a07f17e76bc60e752287144
+deleted: sha256:56ee246b17949bd09bdf503f9d202c4e7aed680797e6598901ddf87f46fd858e
+deleted: sha256:3dead94b503fa848d4e08cecd05e37945dc5a6e2b7137b4de209e2b2cfc043db
+deleted: sha256:910675af3eff9cf844722af8a009cedd566c2a44d732f955f7c9e7e9faaffa55
+deleted: sha256:50e6a256d26f7b8e867b276984a14bd25d2e092cbc00ae2f5ccf1627458d8eb6
+deleted: sha256:7b225bd351d89c4c0d28f26dbf7f38a7cfebed1d9b3fc7ddd04c72af333e3f07
+deleted: sha256:fea490391063169e21a4fee84f7124396f835f0b291b49de7f56cb97283dfffb
+deleted: sha256:3d03273e727f847c569640cd5da7acde57a8d1394822dc264276b8e17ffc1cad
+deleted: sha256:d4c38f621039ee415159634420cd8389a4974848b7b2a57e7e68e2157a8e419f
+deleted: sha256:a10185c8f44ff4c7c9edb8872ba6d5e8dd1315e35dcd1130a66605fd543469cb
+deleted: sha256:6b7ddba845238a43511aac4e1ca2eeef83c2d2e08b877f3a5fbe18a4c0d176ad
+deleted: sha256:3b3a42270c0ba8907019cd353db9f8668fea2c78a49d429fe539428a51085f00
+deleted: sha256:131c7d0773244dee5ab433ebb9f4d549b5b0f1da993e267eb402b90df5fcc672
+deleted: sha256:c4dc7097cf2fb3175acceb331facfbb08ed9ed825c545e5b40eb67c56c599e9e
+deleted: sha256:2681c27be3d143a3055c763841d77205c82c93659145b993aca94e0af2a8d437
+deleted: sha256:bac54b1b7ba32f79b3281f8349f03b080472233c69824629ced0869bdfca5691
+deleted: sha256:f9cf4c588d1eccf2f7156b5dd53602fc7d7b4e734aa146a65259109b8924b495
+deleted: sha256:0e960c44ab71e08aa13344394051499d4c58fec66431f0852b7e9410488c548a
+deleted: sha256:294abf6a4e126ba047fd329c52e218ffa5f98a9dd7946aeb058ffaae1be36b81
+deleted: sha256:092873c8fc45dc02e52cc30affd25114e667e2215580ff53944c48e93990434c
+deleted: sha256:3cd07b51c52cb173d919276baeffb83d350887240e716528119da411fd73ba47
+deleted: sha256:78ff13900d615402568a24175b5ff1d7582c12f3ba4903f99a73752c6d5f597e
+
+Total reclaimed space: 765MB
+```
+Удалим все тома:
+```bash
+6107ad83cd5b7a89aae2a08907132a72716c724cb494cf4259f0217a0b26c658
+d6536aa20990f34ef5066aa13bbb065a43afbd53141ace88b1ac2436713fc41e
+Error response from daemon: remove 08379a7b46a43e3fdf2f86cab2bc317d165b8a898570e02190ce4f9a29496602: volume is in use - [1ebb1435c9ddbd64192bcababf00a55d5895e8fcd1c5734e11b0fe9c6544b98b]
+```
+> Ошибка находящаяся выше показывает, что один том она не может удалить, ведь на нем присутствует наш контейнер **portainer**
+
+И это мы можем проверить командой `docker ps -a --filter volume=08379a7b46a43e3fdf2f86cab2bc317d165b8a898570e02190ce4f9a29496602`, где после **volume=** написано название тома.
+
+Далее установим контейнер от *jc21/registry-ui*. Используя `docker run jc21/registry-ui`
+```bash
+Unable to find image 'jc21/registry-ui:latest' locally
+latest: Pulling from jc21/registry-ui
+27833a3ba0a5: Pull complete 
+63859d5abfc2: Pull complete 
+8f1f0b7d83c3: Pull complete 
+3465a4b08904: Pull complete 
+760694bcb4d0: Pull complete 
+ceb1125e8429: Pull complete 
+Digest: sha256:98461dece795745f8822afc8657a7bd8ee97223f3b7fff75ebe56a2ec4051a3b
+Status: Downloaded newer image for jc21/registry-ui:latest
+```
