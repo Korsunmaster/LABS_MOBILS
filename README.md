@@ -311,3 +311,37 @@ ceb1125e8429: Pull complete
 Digest: sha256:98461dece795745f8822afc8657a7bd8ee97223f3b7fff75ebe56a2ec4051a3b
 Status: Downloaded newer image for jc21/registry-ui:latest
 ```
+Если же мы захотим воспользоваться API docker, то можем подключить **dockerUI**. Используем команду для быстрого запуска с официального *git*: `docker run -d -p 9000:9000 --privileged -v /var/run/docker.sock:/var/run/docker.sock uifd/ui-for-docker`
+```bash
+Unable to find image 'uifd/ui-for-docker:latest' locally
+latest: Pulling from uifd/ui-for-docker
+841194d080c8: Pull complete 
+Digest: sha256:fe371ff5a69549269b24073a5ab1244dd4c0b834cbadf244870572150b1cb749
+Status: Downloaded newer image for uifd/ui-for-docker:latest
+afca67a07e4de733cf28be0938030bcfa1cba27b29db70204f3917336136a3a6
+```
+Мы подключили docker к API и перейдя по по локальному адресу с портом *9000* мы можем попасть на сайт для управления контейнерами http://0.0.0.0:9000
+
+И в конце создадим контейнер **apache**, установим на него лимит по оперативной памяти и процессору: `docker run -dit -m 50m --cpus 1 --name limit -p 8080:80 httpd:2.4`
+```bash
+Unable to find image 'httpd:2.4' locally
+2.4: Pulling from library/httpd
+9e3ea8720c6d: Pull complete 
+35c516cd98eb: Pull complete 
+3050fa5900bc: Pull complete 
+f14b7012c455: Pull complete 
+014a91cb6174: Pull complete 
+Digest: sha256:90254ccc7352e1a5c8d1e4cdab2a032cefac9fd5d4d632ca003a2943c9a9b0a3
+Status: Downloaded newer image for httpd:2.4
+e56d7a35bbd9f535bf5f97fee14ef7eef5f1ea9507d3b452719bc146a0ab1c00
+```
+```bash
+CONTAINER ID   IMAGE                COMMAND              CREATED          STATUS          PORTS                                       NAMES
+e56d7a35bbd9   httpd:2.4            "httpd-foreground"   10 seconds ago   Up 3 seconds    0.0.0.0:8080->80/tcp, :::8080->80/tcp       limit
+```
+```bash
+CONTAINER ID   NAME            CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O    PIDS
+e56d7a35bbd9   limit           0.00%     26.23MiB / 50MiB      52.47%    4.89kB / 1.18kB   0B / 4.1kB   82
+```
+Из сообщений терминала выше можем понять,что контейнер хорошо работает с заданными лимитами, также мы можем это проверить перейдя по локальному адресу с установленным нами портом *8080*: http://0.0.0.0:8080
+
