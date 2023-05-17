@@ -395,3 +395,92 @@ To github.com:Korsunmaster/LABS_MOBILS.git
 Ветка «master» отслеживает внешнюю ветку «master» из «origin».
 ```
 Теперь наш проект загружен.
+
+## Лабораторная работа № 5
+
+По примеру 12 создаем докерфайл и в ту же директорию кидаем файл *index.html*. После этого создаем новый образ командой `docker build . -t example_volume_dockerfile` и запускаем контейнер командой `docker run -d -p 8000:80 example_volume_dockerfile`
+
+После этого проинспектировав созданный контейнер увидим данные о точке монтирования
+```bash
+"Mounts": [
+            {
+                "Type": "volume",
+                "Name": "81d4f60e8c648aafd3d113fd42a58082b37a7335d05541a17aea840cacf6a333",
+                "Source": "/var/lib/docker/volumes/81d4f60e8c648aafd3d113fd42a58082b37a7335d05541a17aea840cacf6a333/_data",
+                "Destination": "/usr/share/nginx/html",
+                "Driver": "local",
+                "Mode": "",
+                "RW": true,
+                "Propagation": ""
+            }
+        ]
+```
+
+Теперь же воостановим и соберем наш проект из прошлой лабораторной работы и подключим к нему *volume*:
+
+Перейдем в терминале в папку с нашим проектом и выполним `docker build . -t myphp` далее создадим новый том `docker volume create storage`
+
+И после этого создадим контейнер присоединив его к нашему тому: `docker run -d -v storage:/var/www/html -p 80:80 myphp`
+
+Убедимся, что присоединение выполнено успешно:
+```bash
+"Mounts": [
+            {
+                "Type": "volume",
+                "Name": "storage",
+                "Source": "/var/lib/docker/volumes/storage/_data",
+                "Destination": "/var/www/html",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            }
+        ]
+```
+
+Таким же образом можно присоединить и **СУБД postgreSQL**: 
+
+Удалим все имющиеся тома и контейнеры и создадим новый том `docker volume create storage`
+
+После этого откроем в контейнере СУБД и примонтируем к вновь созданному тому: `docker run -v storage:/var/lib/postgresql/data --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres` 
+> Команда для создания была взята из dockerhub postgres, а способ монтирования из практического задания в лабораторной работе. Точка монтирования из образа *postgres*.
+```bash
+"Mounts": [
+            {
+                "Type": "volume",
+                "Name": "storage",
+                "Source": "/var/lib/docker/volumes/storage/_data",
+                "Destination": "/var/lib/postgresql/data",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            }
+        ]
+```
+
+Теперь повторим пример 6 для образа *nginx:alpine*. Удалим и создадим вновь volume storage. Далее установим другую точку монтирования для тома */usr/share/nginx/html/* и изменим порт на *80*:
+
+`docker container run -d -v storage:/usr/share/nginx/html/ -p 80:80 --name nginxalp nginx:alpine`
+
+Перейдя по локальному ip на 80 порт можем увидеть измененную стартовую страницу с приветствием от *nginx*.
+
+Следущей командой `sudo cp index.html /var/lib/docker/volumes/storage/_data` мы скопируем наш файл в volume.
+
+И с помощью команды `sudo ls -l /var/lib/docker/volumes/storage/_data` увидим, что файл добавлен:
+```bash
+-rw-r--r-- 1 root root 153 мая 17 19:40 index.html
+```
+
+Также можно проверить работоспособность с помощью команды *curl*, ведь мы перебросили файл *index.html* в наш том, поэтому введя `curl http://localhost:80` получим:
+```bash
+<!doctype html>
+<html>
+  <head>
+    <title>This is the title of the webpage!</title>
+  </head>
+  <body>
+    <p>My one Dockerfile!!</p>
+  </body>
+</html>
+```
