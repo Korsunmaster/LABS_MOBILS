@@ -320,7 +320,7 @@ Digest: sha256:fe371ff5a69549269b24073a5ab1244dd4c0b834cbadf244870572150b1cb749
 Status: Downloaded newer image for uifd/ui-for-docker:latest
 afca67a07e4de733cf28be0938030bcfa1cba27b29db70204f3917336136a3a6
 ```
-Мы подключили docker к API и перейдя по по локальному адресу с портом *9000* мы можем попасть на сайт для управления контейнерами http://0.0.0.0:9000
+Мы подключили docker к API и перейдя по по локальному адресу с портом *9000* мы можем попасть на сайт для управления контейнерами http://localhost:9000
 
 И в конце создадим контейнер **apache**, установим на него лимит по оперативной памяти и процессору: `docker run -dit -m 50m --cpus 1 --name limit -p 8080:80 httpd:2.4`
 ```bash
@@ -343,5 +343,55 @@ e56d7a35bbd9   httpd:2.4            "httpd-foreground"   10 seconds ago   Up 3 s
 CONTAINER ID   NAME            CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O    PIDS
 e56d7a35bbd9   limit           0.00%     26.23MiB / 50MiB      52.47%    4.89kB / 1.18kB   0B / 4.1kB   82
 ```
-Из сообщений терминала выше можем понять,что контейнер хорошо работает с заданными лимитами, также мы можем это проверить перейдя по локальному адресу с установленным нами портом *8080*: http://0.0.0.0:8080
+Из сообщений терминала выше можем понять,что контейнер хорошо работает с заданными лимитами, также мы можем это проверить перейдя по локальному адресу с установленным нами портом *8080*: http://localhost:8080
 
+## Лабораторная работа № 4
+
+В этой лабораторной работе мы создадим самый простой одностраничный сайт на **php** с выводом 1 строки и подключим к нему **Dockerfile**, а после запустим на 80 порту локальной машины.
+
+Создаем в новой папке 2 файла: *Dockerfile* и index.php
+```bash
+FROM php:8.2-apache
+COPY . /var/www/html
+WORKDIR /var/www/html
+EXPOSE 80
+```
+
+```bash
+<?php
+    echo "Hello Anton Dmitrievich";
+```
+Теперь создадим образ из нашего образа Dockerfile и назовем его *myphp*, к примеру.
+
+`docker build . -t myphp`
+
+После сборки мы можем запстить наш контейнер назначив ему 80 порт на локальной машине, к примеру, и 80 порт на хост машине, т.к. он у нас указан в Dockerfile.
+
+`docker run -d -p 80:80 myphp`
+
+И теперь перейдя по локальному ip мы можем увидеть наш самый простой сайт http://localhost:80
+
+Также мы можем выгрузить наш проект с докерфайлом и сайтом на наш репозиторий.
+
+Для этого перейдем в нашу папку с помощью команды `cd` и далее путь к созданной папке.
+
+Там пропишем `git init` затем `git add .` далее `git commit -m 'php'` еще `git remote add origin git@github.com:Korsunmaster/LABS_MOBILS.git` и наконец `git push --set-upstream origin master`
+
+```bash
+Are you sure you want to continue connecting (yes/no/[fingerprint])? y
+Please type 'yes', 'no' or the fingerprint: yes
+Перечисление объектов: 4, готово.
+Подсчет объектов: 100% (4/4), готово.
+При сжатии изменений используется до 6 потоков
+Сжатие объектов: 100% (3/3), готово.
+Запись объектов: 100% (4/4), 372 bytes | 372.00 KiB/s, готово.
+Total 4 (delta 0), reused 0 (delta 0), pack-reused 0
+remote: 
+remote: Create a pull request for 'master' on GitHub by visiting:
+remote:      https://github.com/Korsunmaster/LABS_MOBILS/pull/new/master
+remote: 
+To github.com:Korsunmaster/LABS_MOBILS.git
+ * [new branch]      master -> master
+Ветка «master» отслеживает внешнюю ветку «master» из «origin».
+```
+Теперь наш проект загружен.
