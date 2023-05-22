@@ -484,3 +484,49 @@ To github.com:Korsunmaster/LABS_MOBILS.git
   </body>
 </html>
 ```
+## Лабораторная работа №6
+В данной лабораторной работе мы создадим приложение на **vuejs** и проксируем все запросы через веб-сервер **nginx**. Я использую **npm** версии - 9.6.7; **node** версии - v18.16.0
+
+Для начала переходим в директорию в которой будет располагаться наше приложение и инициализируем наш проект:
+```bash
+npm init vite@latest testvue --template vue
+# вместо testvue может быть любое другое название проекта
+# выберите vue ->vue
+cd testvue
+npm install
+npm run dev
+```
+Затем после инициализации в этой же папке с названием нашего проекта создаем *2 новых файла*:
+
+Dockerfile
+```bash
+FROM node:lts-alpine as build-stage
+RUN apk update && apk upgrade
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+
+FROM nginx:stable-alpine as production-stage
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+docker-compose.yml
+```bash
+version: "3"
+services:
+  web:
+    build: .  # показываем, что докерфайл в этой же директории
+    ports:
+      - "80:80"  # задаем 80 порт на локальной машине
+```
+И все, далее просто запускаем наш докеркомпоз файл. Проект готов и все его запросы проходят через nginx: `docker-compose up -d --build`
+```bash
+CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS          PORTS                               NAMES
+56985d023f48   testvue_web   "/docker-entrypoint.…"   14 seconds ago   Up 11 seconds   0.0.0.0:80->80/tcp, :::80->80/tcp   testvue_web_1
+```
+Для статических файлов *nginx* хорошее решение, но для динамического рендеринга файлов возможно лучше подойдет **apache**.
