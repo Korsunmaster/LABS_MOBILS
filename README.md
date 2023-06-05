@@ -530,3 +530,111 @@ CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS   
 56985d023f48   testvue_web   "/docker-entrypoint.…"   14 seconds ago   Up 11 seconds   0.0.0.0:80->80/tcp, :::80->80/tcp   testvue_web_1
 ```
 Для статических файлов *nginx* хорошее решение, но для динамического рендеринга файлов возможно лучше подойдет **apache**.
+
+## Лабораторная работа №7
+
+Dockerfile
+```bash
+FROM python:3.6
+ADD . /app
+WORKDIR /app
+RUN adduser --disabled-password newuser
+RUN chown -R newuser /app
+USER newuser
+RUN pip install --no-cache-dir -r requirements.txt
+```
+
+requirements.txt
+```bash
+flask
+pymongo
+```
+
+app.py
+```bash
+from flask import Flask, jsonify
+import pymongo
+from pymongo import MongoClient
+
+app = Flask(__name__)
+
+def get_db():
+    client = MongoClient(host='test_mongodb',
+                         port=27017, 
+                         username='root', 
+                         password='pass',
+                        authSource="admin")
+    db = client["animal_db"]
+    return db
+
+@app.route('/')
+def ping_server():
+    return "Welcome to the world of animals."
+
+@app.route('/animals')
+def get_stored_animals():
+    db=""
+    try:
+        db = get_db()
+        _animals = db.animal_tb.find()
+        animals = [{"id": animal["id"], "name": animal["name"], "type": animal["type"]} for animal in _animals]
+        return jsonify({"animals": animals})
+    except:
+        pass
+    finally:
+        if type(db)==MongoClient:
+            db.close()
+
+if __name__=='__main__':
+    app.run(host="0.0.0.0", port=5000)
+```
+
+docker-compose.yml
+```bash
+version: '3'
+services:
+  app:
+    build: .
+    command: python -u app.py
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    links:
+      - db
+  db:
+    image: mongo:latest
+    hostname: test_mongodb
+    environment:
+      - MONGO_INITDB_DATABASE=animal_db
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    volumes:
+      - ./init-db.js:/docker-entrypoint-initdb.d/init-db.js:ro
+    ports:
+      - 27017:27017
+```
+
+init-db.js
+```bash
+db = db.getSiblingDB("animal_db");
+db.animal_tb.drop();
+
+db.animal_tb.insertMany([
+    {
+        "id": 1,
+        "name": "Lion",
+        "type": "wild"
+    },
+    {
+        "id": 2,
+        "name": "Cow",
+        "type": "domestic"
+    },
+    {
+        "id": 3,
+        "name": "Tiger",
+        "type": "wild"
+    },
+]);
+```
